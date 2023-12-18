@@ -2,6 +2,7 @@ pipeline {
     agent any
     tools {
         Maven3
+        Java17
     }
     stages {
         stage('Clean WS') {
