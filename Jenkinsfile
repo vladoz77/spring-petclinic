@@ -1,5 +1,8 @@
 pipeline {
     agent any
+    tools {
+        Maven3
+    }
     stages {
         stage('Clean WS') {
             steps {
