@@ -16,5 +16,11 @@ pipeline {
                 git branch: 'main', credentialsId: 'github', url: 'https://github.com/vladoz77/spring-petclinic'
             }
         }
+
+        stage('maven build') {
+            steps {
+                sh "mvn  package"
+            }
+        }
     }
 }
