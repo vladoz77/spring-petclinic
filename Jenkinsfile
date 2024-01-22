@@ -27,9 +27,14 @@ pipeline {
         }
     }
     post {
-                success {
-                    junit '**/target/surefire-reports/TEST-*.xml'
-                    archiveArtifacts 'target/*.jar'
-                }
+        success {
+            junit '**/target/surefire-reports/TEST-*.xml'
+            archiveArtifacts 'target/*.jar'
+        }
+         changed {
+            emailext attachLog: true, body: 'Please, go to $(BUILD_URL) and fix the build  $(BUILD_NUMBER)', compressLog: true, recipientProviders: [requestor(), upstreamDevelopers()], subject: 'Job $(JOB_NAME) and   $(BUILD_NUMBER) is waiting for fix'        
+        }
+        
+
     }
 }
