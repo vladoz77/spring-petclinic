@@ -23,9 +23,9 @@ pipeline {
         stage('maven build') {
             steps {
                 // sh "mvn  package -Dcheckstyle.skip"
-                sh "cat hello from build"
+                sh "echo hello from build"
             }
-        }
+        } 
     }
     post {
         always  {
