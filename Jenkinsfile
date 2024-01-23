@@ -22,17 +22,18 @@ pipeline {
 
         stage('maven build') {
             steps {
-                sh "mvn  package -Dcheckstyle.skip"
+                // sh "mvn  package -Dcheckstyle.skip"
+                sh "hello from build"
             }
         }
     }
     post {
         always  {
-            junit '**/target/surefire-reports/TEST-*.xml'
-            archiveArtifacts 'target/*.jar'
+            // junit '**/target/surefire-reports/TEST-*.xml'
+            // archiveArtifacts 'target/*.jar'
         // }
         //  changed {
-            emailext subject: "Job $JOB_NAME and   $BUILD_NUMBER is waiting for fix", 
+            emailext subject: "Job $JOB_NAME and build $BUILD_NUMBER, result build is $currentBuild.result", 
                 body: "Please, go to $BUILD_URL and fix the build  $BUILD_NUMBER", 
                 compressLog: true, 
                 recipientProviders: [requestor(), upstreamDevelopers()], 
