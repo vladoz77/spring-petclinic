@@ -32,10 +32,13 @@ pipeline {
             archiveArtifacts 'target/*.jar'
         // }
         //  changed {
-            emailext attachLog: true, body: 'Please, go to $(BUILD_URL) and fix the build  $(BUILD_NUMBER)', 
-            compressLog: true, recipientProviders: [requestor(), upstreamDevelopers()], 
-            subject: 'Job $(JOB_NAME) and   $(BUILD_NUMBER) is waiting for fix',
-            to: 'test@jenkins'       
+            emailext 
+                subject: "Job $(JOB_NAME) and   $(BUILD_NUMBER) is waiting for fix", 
+                body: 'Please, go to $(BUILD_URL) and fix the build  $(BUILD_NUMBER)', 
+                compressLog: true, 
+                recipientProviders: [requestor(), upstreamDevelopers()], 
+                attachLog: true,
+                to: 'test@jenkins'       
         }
         
 
