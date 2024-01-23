@@ -23,7 +23,7 @@ pipeline {
         stage('maven build') {
             steps {
                 // sh "mvn  package -Dcheckstyle.skip"
-                sh "hello from build"
+                sh "cat hello from build"
             }
         }
     }
@@ -33,7 +33,7 @@ pipeline {
             // archiveArtifacts 'target/*.jar'
         // }
         //  changed {
-            emailext subject: "Job $JOB_NAME and build $BUILD_NUMBER, result build is $currentBuild.result", 
+            emailext subject: "Job $JOB_NAME, build $BUILD_NUMBER, result build is $currentBuild.result", 
                 body: "Please, go to $BUILD_URL and fix the build  $BUILD_NUMBER", 
                 compressLog: true, 
                 recipientProviders: [requestor(), upstreamDevelopers()], 
