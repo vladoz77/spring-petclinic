@@ -32,8 +32,7 @@ pipeline {
             archiveArtifacts 'target/*.jar'
         // }
         //  changed {
-            emailext 
-                subject: "Job $JOB_NAME and   $BUILD_NUMBER is waiting for fix", 
+            emailext subject: "Job $JOB_NAME and   $BUILD_NUMBER is waiting for fix", 
                 body: "Please, go to $BUILD_URL and fix the build  $BUILD_NUMBER", 
                 compressLog: true, 
                 recipientProviders: [requestor(), upstreamDevelopers()], 
