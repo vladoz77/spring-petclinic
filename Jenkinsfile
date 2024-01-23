@@ -22,16 +22,15 @@ pipeline {
 
         stage('maven build') {
             steps {
-                // sh "mvn  package -Dcheckstyle.skip"
-                sh "true"
+                sh "mvn  package -Dcheckstyle.skip"
             }
         } 
     }
     post {
-        // always  {
-            // junit '**/target/surefire-reports/TEST-*.xml'
-            // archiveArtifacts 'target/*.jar'
-        // }
+        always  {
+            junit '**/target/surefire-reports/TEST-*.xml'
+            archiveArtifacts 'target/*.jar'
+        }
          changed {
             emailext subject: "Job $JOB_NAME, build $BUILD_NUMBER, result build is $currentBuild.result", 
                 body: "Please, go to $BUILD_URL and fix the build  $BUILD_NUMBER", 
