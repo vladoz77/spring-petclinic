@@ -10,6 +10,13 @@ pipeline {
     parameters {
         booleanParam(defaultValue: false, description: 'Run build?', name: 'BUILD')
     }
+    environment {
+        RepoBranch = 'main'
+        GitCred = 'github-cred'
+        GitURL = 'https://github.com/vladoz77/spring-petclinic'
+
+
+    }
     stages {
         stage('Clean WS') {
             steps {
@@ -19,7 +26,8 @@ pipeline {
 
         stage('Copy SCM') {
             steps {
-                git branch: 'main', credentialsId: 'github', url: 'https://github.com/vladoz77/spring-petclinic'
+                GitCheckout()
+                // git branch: 'main', credentialsId: 'github', url: 'https://github.com/vladoz77/spring-petclinic'
             }
         }
 
@@ -48,4 +56,8 @@ pipeline {
         
 
     }
+}
+
+void GitCheckout() {
+        git branch: "${RepoBranch}", credentialsId: "${GitCred}", url: "${GitURL}"
 }
