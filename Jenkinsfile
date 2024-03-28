@@ -7,7 +7,7 @@ pipeline {
     triggers {
         pollSCM 'H/15 * * * *'
     }
-    parametrs {
+    parametErs {
         booleanParam(name: 'BUILD', defaultVaue: false, description: 'Run build?')
     }
     stages {
