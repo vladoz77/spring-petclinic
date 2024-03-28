@@ -7,6 +7,9 @@ pipeline {
     triggers {
         pollSCM 'H/15 * * * *'
     }
+    parametrs {
+        booleanParam(name: 'BUILD', defaultVaue: false, description: 'Run build?')
+    }
     stages {
         stage('Clean WS') {
             steps {
@@ -34,14 +37,14 @@ pipeline {
             junit '**/target/surefire-reports/TEST-*.xml'
             archiveArtifacts 'target/*.jar'
         }
-         changed {
-            emailext subject: "Job $JOB_NAME, build $BUILD_NUMBER, result build is $currentBuild.result", 
-                body: "Please, go to $BUILD_URL and fix the build  $BUILD_NUMBER", 
-                compressLog: true, 
-                recipientProviders: [requestor(), upstreamDevelopers()], 
-                attachLog: true,
-                to: 'test@jenkins'       
-        }
+        //  changed {
+        //     emailext subject: "Job $JOB_NAME, build $BUILD_NUMBER, result build is $currentBuild.result", 
+        //         body: "Please, go to $BUILD_URL and fix the build  $BUILD_NUMBER", 
+        //         compressLog: true, 
+        //         recipientProviders: [requestor(), upstreamDevelopers()], 
+        //         attachLog: true,
+        //         to: 'test@jenkins'       
+        // }
         
 
     }
