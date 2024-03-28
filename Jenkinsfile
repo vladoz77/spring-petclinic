@@ -8,7 +8,7 @@ pipeline {
         pollSCM 'H/15 * * * *'
     }
     parameters {
-        booleanParam(defaultValue: true, description: 'Run build?', name: 'BUILD')
+        booleanParam(defaultValue: false, description: 'Run build?', name: 'BUILD')
     }
     stages {
         stage('Clean WS') {
