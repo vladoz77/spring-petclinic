@@ -1,0 +1,16 @@
+{
+    "jenkins-runner.hostConfigs": {
+        "agent1": {
+            "url": "http://jenkins.dev.local",
+            "user": "Vladislav",
+            "password": "!QAZ2wsx"
+        }
+    },
+    "jenkins-runner.jobs": {
+            "petclinic": {
+                "isDefault": true,
+                "runWith": "agent1",
+                "name": "petclinic",
+            }
+    }
+}
