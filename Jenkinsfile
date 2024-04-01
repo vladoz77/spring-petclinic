@@ -38,6 +38,18 @@ pipeline {
                 sh "mvn  package -Dcheckstyle.skip"
             }
         } 
+
+        stage('build image') {
+            steps {
+                environment{
+                    IMAGE_NAME = 'petclinic'
+                    IMAGE_TAG = "${BUILD_NUMBER}"
+                }
+                script {
+                    image = docker.build("${IMAGE_NAME}:${IMAGE_TAG}")
+                }
+            }
+        } 
     }
     post {
         always  {
