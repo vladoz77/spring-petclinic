@@ -6,7 +6,7 @@ pipeline {
     }
 
     
-       
+    // 
     stages {
         stage('Clean WS') {
             steps {
