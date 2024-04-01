@@ -5,7 +5,7 @@ pipeline {
         maven "Maven3"
     }
 
-    }
+    
        
     stages {
         stage('Clean WS') {
