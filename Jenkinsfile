@@ -10,7 +10,7 @@ pipeline {
     // parameters {
     //     booleanParam(defaultValue: false, description: 'Run build?', name: 'BUILD')
     // }
-    
+    // 
     stages {
         stage('Clean WS') {
             steps {
