@@ -7,10 +7,7 @@ pipeline {
     triggers {
         pollSCM 'H/15 * * * *'
     }
-    parameters {
-        booleanParam(defaultValue: false, description: 'Run build?', name: 'BUILD')
-    }
-    
+       
     stages {
         stage('Clean WS') {
             steps {
@@ -31,9 +28,7 @@ pipeline {
         }
 
         stage('maven build') {
-            when {
-                expression{ return params.BUILD}
-            }
+           
             steps {
                 sh "mvn  package -Dcheckstyle.skip"
             }
