@@ -4,8 +4,7 @@ pipeline {
         jdk "Java17"
         maven "Maven3"
     }
-    triggers {
-        pollSCM 'H/15 * * * *'
+
     }
        
     stages {
