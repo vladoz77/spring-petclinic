@@ -29,8 +29,7 @@ pipeline {
         stage('maven build') {
            
             steps {
-                // sh "mvn  package -Dcheckstyle.skip"
-                sh "true"
+                sh "mvn  package -Dcheckstyle.skip"
             }
         } 
 
@@ -49,7 +48,6 @@ pipeline {
                 attachLog: true,
                 to: 'test@jenkins'       
         }
->>>>>>> parent of 161a7e1 (config Jenkinsfile for test mail notif)
         
 
     }
