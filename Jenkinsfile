@@ -4,9 +4,9 @@ pipeline {
         jdk "Java17"
         maven "Maven3"
     }
-    triggers {
-        pollSCM 'H/15 * * * *'
-    }
+
+    
+    
     stages {
         stage('Clean WS') {
             steps {
@@ -15,16 +15,26 @@ pipeline {
         }
 
         stage('Copy SCM') {
+            environment {
+                RepoBranch = 'main'
+                GitCred = 'github-cred'
+                GitURL = 'https://github.com/vladoz77/spring-petclinic'
+            }
             steps {
-                git branch: 'main', credentialsId: 'github', url: 'https://github.com/vladoz77/spring-petclinic'
+                GitCheckout()
+                // git branch: 'main', credentialsId: 'github', url: 'https://github.com/vladoz77/spring-petclinic'
             }
         }
 
         stage('maven build') {
+           
             steps {
-                sh "mvn  package -Dcheckstyle.skip"
+                // sh "mvn  package -Dcheckstyle.skip"
+                sh "true"
             }
         } 
+
+        
     }
     post {
         always  {
@@ -39,7 +49,12 @@ pipeline {
                 attachLog: true,
                 to: 'test@jenkins'       
         }
+>>>>>>> parent of 161a7e1 (config Jenkinsfile for test mail notif)
         
 
     }
+}
+
+void GitCheckout() {
+        git branch: "${RepoBranch}", credentialsId: "${GitCred}", url: "${GitURL}"
 }
