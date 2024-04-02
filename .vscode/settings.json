@@ -12,5 +12,6 @@
                 "runWith": "agent1",
                 "name": "petclinic",
             }
-    }
+    },
+    "java.compile.nullAnalysis.mode": "disabled"
 }
