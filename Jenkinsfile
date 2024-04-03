@@ -9,7 +9,7 @@ pipeline {
         APP_NAME="petclinic"
         DOCKER_REPO="vladoz77"
         RELEASE="1.0.0"
-        IMAGE_NAME="${DOCKER_REPO}+"/"+${APP_NAME}"
+        IMAGE_NAME="${DOCKER_REPO}+/+${APP_NAME}"
         IMAGE_TAG="${RELEASE}+${BUILD_NUMBER}"
     }
     
