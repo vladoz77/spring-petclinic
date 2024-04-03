@@ -5,7 +5,13 @@ pipeline {
         maven "Maven3"
     }
 
-    
+    environment{
+        APP_NAME="petclinic"
+        DOCKER_REPO="vladoz77"
+        RELEASE="1.0.0"
+        IMAGE_NAME="${DOCKER_REPO}+"/"+${APP_NAME}"
+        IMAGE_TAG="${RELEASE}+${BUILD_NUMBER}"
+    }
     
     stages {
         stage('Clean WS') {
@@ -30,6 +36,18 @@ pipeline {
            
             steps {
                 sh "mvn  package -Dcheckstyle.skip"
+            }
+        }
+
+        stage('build image') {
+            steps {
+                script{
+                    app=docker.build(${IMAGE_NAME})
+                    withDockerRegistry(credentialsId: 'dockerhub-token') {
+                        app.push(${IMAGE_TAG})
+                        app.push('latest')
+                    }
+                }
             }
         } 
 
