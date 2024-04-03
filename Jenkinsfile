@@ -42,9 +42,9 @@ pipeline {
         stage('build image') {
             steps {
                 script{
-                    app=docker.build(${IMAGE_NAME})
+                    app=docker.build("${IMAGE_NAME}")
                     withDockerRegistry(credentialsId: 'dockerhub-token') {
-                        app.push(${IMAGE_TAG})
+                        app.push("${IMAGE_TAG}")
                         app.push('latest')
                     }
                 }
