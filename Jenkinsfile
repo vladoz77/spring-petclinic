@@ -48,7 +48,7 @@ pipeline {
             }
         } 
 
-        stage(push image to dockerhub){
+        stage('push image to dockerhub'){
             steps{
                 withDockerRegistry(credentialsId: 'dockerhub-token') {
                         customImage.push("${IMAGE_TAG}")
