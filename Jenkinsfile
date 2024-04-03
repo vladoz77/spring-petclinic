@@ -42,15 +42,20 @@ pipeline {
         stage('build image') {
             steps {
                 script{
-                    customImage=docker.build("${IMAGE_NAME}:${IMAGE_TAG}").withRun('--security-opt seccomp=unconfined')
-                    withDockerRegistry(credentialsId: 'dockerhub-token') {
-                        customImage.push("${IMAGE_TAG}")
-                        customImage.push('latest')
-                    }
+                    customImage=docker.build("${IMAGE_NAME}:${IMAGE_TAG}")
+                    
                 }
             }
         } 
 
+        stage(push image to dockerhub){
+            steps{
+                withDockerRegistry(credentialsId: 'dockerhub-token') {
+                        customImage.push("${IMAGE_TAG}")
+                        customImage.push('latest')
+                    }
+            }
+        }
         
     }
     post {
