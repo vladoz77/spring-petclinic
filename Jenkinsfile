@@ -42,7 +42,7 @@ pipeline {
         stage('build image') {
             steps {
                 script{
-                    def customImage=docker.build("${IMAGE_NAME}:${IMAGE_TAG}")
+                    customImage=docker.build("${IMAGE_NAME}:${IMAGE_TAG}")
                     withDockerRegistry(credentialsId: 'dockerhub-token') {
                         customImage.push("${IMAGE_TAG}")
                         customImage.push('latest')
