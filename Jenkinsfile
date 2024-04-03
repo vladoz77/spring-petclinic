@@ -9,8 +9,8 @@ pipeline {
         APP_NAME="petclinic"
         DOCKER_REPO="vladoz77"
         RELEASE="1.0.0"
-        IMAGE_NAME="${DOCKER_REPO}+/+${APP_NAME}"
-        IMAGE_TAG="${RELEASE}+${BUILD_NUMBER}"
+        IMAGE_NAME="${DOCKER_REPO} + "/" + ${APP_NAME}"
+        IMAGE_TAG="${RELEASE}-${BUILD_NUMBER}"
     }
     
     stages {
@@ -42,10 +42,10 @@ pipeline {
         stage('build image') {
             steps {
                 script{
-                    app=docker.build("${IMAGE_NAME}:${IMAGE_TAG}")
+                    def customImage=docker.build("${IMAGE_NAME}:${IMAGE_TAG}")
                     withDockerRegistry(credentialsId: 'dockerhub-token') {
-                        app.push("${IMAGE_TAG}")
-                        app.push('latest')
+                        customImage.push("${IMAGE_TAG}")
+                        customImage.push('latest')
                     }
                 }
             }
