@@ -59,6 +59,14 @@ pipeline {
                 
             }
         }
+
+        stage('cleanup image'){
+            steps{
+                script{
+                    sh "docker image rm ${IMAGE_NAME}:${IMAGE_TAG}"
+                }
+            }
+        }
         
     }
     post {
