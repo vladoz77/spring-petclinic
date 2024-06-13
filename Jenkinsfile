@@ -39,6 +39,26 @@ pipeline {
             }
         }
 
+        stage('sonarqube analyses') {
+           
+            steps {
+                script{
+                    withSonarQubeEnv(credentialsId: 'sonarqube-token') {
+                        sh "mvn clean package sonar:sonar"
+                    }
+                }
+            }
+        }
+
+        stage('Quality gate') {
+           
+            steps {
+                timeout(time: 1, unit: 'HOURS') {
+                    waitForQualityGate abortPipeline: false, credentialsId: 'sonarqube-token'
+                }
+            }
+        }
+
         stage('build image') {
             steps {
                 script{
