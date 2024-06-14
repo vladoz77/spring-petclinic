@@ -72,7 +72,6 @@ pipeline {
             steps {
                 script {
                     sh 'trivy image --format table  -o ${WORKSPACE}/result ${IMAGE_NAME}:${IMAGE_TAG}' 
-                    junit '${WORKSPACE}/result'
                 }
             }
         }
