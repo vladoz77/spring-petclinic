@@ -71,7 +71,8 @@ pipeline {
         stage('Trivy scan') {
             steps {
                 script {
-                    sh 'trivy image --format table  -o /tmp/result ${IMAGE_NAME}:${IMAGE_TAG}' 
+                    sh 'trivy image --format table  -o ${WORKSPACE}/result ${IMAGE_NAME}:${IMAGE_TAG}' 
+                    junit '${WORKSPACE}/result'
                 }
             }
         }
