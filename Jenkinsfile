@@ -71,11 +71,7 @@ pipeline {
         stage('Trivy scan') {
             steps {
                 script {
-<<<<<<< HEAD
-                    sh 'trivy image -f json -o results.json ${IMAGE_NAME}:${IMAGE_TAG}'
-=======
                     sh "trivy image --format template --template "@/usr/local/share/trivy/templates/html.tpl" -o /tmp/trivy.html ${IMAGE_NAME}:${IMAGE_TAG}" 
->>>>>>> parent of 2f31462 (fix trivy)
                 }
             }
         }
