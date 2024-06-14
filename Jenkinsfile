@@ -54,7 +54,7 @@ pipeline {
            
             steps {
                 timeout(time: 1, unit: 'HOURS') {
-                    waitForQualityGate abortPipeline: false, credentialsId: 'sonarqube-token'
+                    waitForQualityGate abortPipeline: true, credentialsId: 'sonarqube-token'
                 }
             }
         }
@@ -67,6 +67,14 @@ pipeline {
                 }
             }
         } 
+        
+        stage('Trivy scan') {
+            steps {
+                script {
+                    trivy image "${IMAGE_NAME}:${IMAGE_TAG}" 
+                }
+            }
+        }
 
         stage('push image to dockerhub'){
             steps{

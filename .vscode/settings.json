@@ -1,7 +1,7 @@
 {
     "jenkins-runner.hostConfigs": {
         "agent1": {
-            "url": "http://jenkins.dev.local",
+            "url": "http://jenkins.home.local",
             "user": "Vladislav",
             "password": "!QAZ2wsx"
         }
