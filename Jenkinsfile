@@ -77,6 +77,10 @@ pipeline {
         }
 
         stage('push image to dockerhub'){
+            input{
+                message "Should we push to Dockerhub"
+                ok "Yes"
+            }
             steps{
                 script{
                     withDockerRegistry(credentialsId: 'dockerhub-token') {
