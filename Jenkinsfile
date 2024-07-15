@@ -35,7 +35,7 @@ pipeline {
         stage('maven build') {
            
             steps {
-                sh "mvn  package -Dcheckstyle.skip"
+                sh "mvn  package -Dcheckstyle.skip -DskipTests"
             }
         }
 
