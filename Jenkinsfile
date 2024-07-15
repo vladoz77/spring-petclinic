@@ -39,31 +39,33 @@ pipeline {
             }
         }
 
-        stage('maven test') {
-           
-            steps {
-                sh "mvn test -Dcheckstyle.skip"
-            }
-        }
-
-
-        stage('sonarqube analyses') {
-           
-            steps {
-                script{
-                    withSonarQubeEnv(credentialsId: 'sonarqube-token') {
-                        sh "mvn sonar:sonar"
+        stage('run test') {
+            parallel {
+                stage('maven test') {
+                    steps {
+                        sh "mvn test -Dcheckstyle.skip"
                     }
                 }
-            }
-        }
 
-        stage('Quality gate') {
-           
-            steps {
-                timeout(time: 1, unit: 'HOURS') {
-                    waitForQualityGate abortPipeline: true, credentialsId: 'sonarqube-token'
+                stage('sonarqube analyses') {
+                    steps {
+                        script{
+                            withSonarQubeEnv(credentialsId: 'sonarqube-token') {
+                                sh "mvn sonar:sonar"
+                            }
+                        }
+                    }
                 }
+
+                stage('Quality gate') {
+           
+                    steps {
+                        timeout(time: 1, unit: 'HOURS') {
+                            waitForQualityGate abortPipeline: true, credentialsId: 'sonarqube-token'
+                        }
+                    }
+                }
+
             }
         }
 
