@@ -39,6 +39,14 @@ pipeline {
             }
         }
 
+        stage('maven test') {
+           
+            steps {
+                sh "mvn test"
+            }
+        }
+
+
         stage('sonarqube analyses') {
            
             steps {
