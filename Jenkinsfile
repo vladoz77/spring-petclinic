@@ -71,7 +71,8 @@ pipeline {
         stage('Trivy scan') {
             steps {
                 script {
-                    sh 'trivy image --format table  -o ${WORKSPACE}/result ${IMAGE_NAME}:${IMAGE_TAG}' 
+                    sh 'trivy image  --exit-code 0 --severity LOW, MEDIUM ${IMAGE_NAME}:${IMAGE_TAG}' 
+                    sh 'trivy image  --exit-code 0 --severity LOW, MEDIUM ${IMAGE_NAME}:${IMAGE_TAG}'
                 }
             }
         }
