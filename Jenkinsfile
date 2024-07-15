@@ -57,16 +57,15 @@ pipeline {
                     }
                 }
 
-                stage('Quality gate') {
-           
-                    steps {
-                        timeout(time: 1, unit: 'HOURS') {
-                            waitForQualityGate abortPipeline: true, credentialsId: 'sonarqube-token'
-                        }
-                    }
-                }
-
             }
+        }
+
+        stage('Quality gate') {
+            steps {
+                timeout(time: 1, unit: 'HOURS') {
+                    waitForQualityGate abortPipeline: true, credentialsId: 'sonarqube-token'
+                }
+            }         
         }
 
         stage('build image') {
@@ -77,6 +76,8 @@ pipeline {
                 }
             }
         } 
+        
+        
         
         stage('Trivy scan') {
             steps {
