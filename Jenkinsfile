@@ -71,7 +71,7 @@ pipeline {
         stage('Trivy scan') {
             steps {
                 script {
-                    sh 'trivy image -f tabel ${IMAGE_NAME}:${IMAGE_TAG} -o ${WORKSPACE}/result.txt'
+                    sh 'trivy image  ${IMAGE_NAME}:${IMAGE_TAG} -o ${WORKSPACE}/result.txt'
                 }
             }
         }
