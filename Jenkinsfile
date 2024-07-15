@@ -112,7 +112,7 @@ pipeline {
     post {
         always  {
             junit '**/target/surefire-reports/TEST-*.xml'
-            archiveArtifacts 'target/*.jar,${WORKSPACE}/result.txt''
+            archiveArtifacts 'target/*.jar,result.txt'
         }
          changed {
             emailext subject: "Job $JOB_NAME, build $BUILD_NUMBER, result build is $currentBuild.result", 
