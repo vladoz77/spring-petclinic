@@ -11,6 +11,10 @@ pipeline {
         RELEASE="1.0.0"
         IMAGE_NAME="vladoz77/petclinic"
         IMAGE_TAG="${RELEASE}-${BUILD_NUMBER}"
+
+        // Telegram bot credentials
+        TOKEN=credentials('telegram_token')
+        CHAT_ID=credentials('telegram_chat_id')
     }
     
     stages {
@@ -113,6 +117,11 @@ pipeline {
         
     }
     post {
+        success {
+            script {
+                sh "curl -X POST -H 'Content-Type: application/json' -d '{\"chat_id\": \"${CHAT_ID}\", \"text\": \"${JOB_NAME}: #${BUILD_NUMBER}\n✅ Deploy succeeded! \", \"disable_notification\": false}' \"https://api.telegram.org/bot${TOKEN}/sendMessage\""
+            }
+        }
         always  {
             junit '**/target/surefire-reports/TEST-*.xml'
             archiveArtifacts 'target/*.jar,result.txt'
