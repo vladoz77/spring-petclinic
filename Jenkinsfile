@@ -15,6 +15,10 @@ pipeline {
         // Telegram bot credentials
         TOKEN=credentials('telegram_token')
         CHAT_ID=credentials('telegram_chat_id')
+
+        // Telegram text message
+        SUCCESS_BUILD="${JOB_NAME}: #${BUILD_NUMBER} ✅ Deploy succeeded!"
+        FAILED_BUILD="${JOB_NAME}: #${BUILD_NUMBER} ❌Deploy failure!"
     }
     
     stages {
@@ -92,10 +96,6 @@ pipeline {
         }
 
         stage('push image to dockerhub'){
-            input{
-                message "Should we push to Dockerhub"
-                ok "Yes"
-            }
             steps{
                 script{
                     withDockerRegistry(credentialsId: 'dockerhub-token') {
@@ -117,25 +117,22 @@ pipeline {
         
     }
     post {
-        success {
-            script {
-                sh "curl -X POST -H 'Content-Type: application/json' -d '{\"chat_id\": \"${CHAT_ID}\", \"text\": \"${JOB_NAME}: #${BUILD_NUMBER}\n✅ Deploy succeeded! \", \"disable_notification\": false}' \"https://api.telegram.org/bot${TOKEN}/sendMessage\""
-            }
-        }
         always  {
             junit '**/target/surefire-reports/TEST-*.xml'
             archiveArtifacts 'target/*.jar,result.txt'
         }
-         changed {
-            emailext subject: "Job $JOB_NAME, build $BUILD_NUMBER, result build is $currentBuild.result", 
-                body: "Please, go to $BUILD_URL and fix the build  $BUILD_NUMBER", 
-                compressLog: true, 
-                recipientProviders: [requestor(), upstreamDevelopers()], 
-                attachLog: true,
-                to: 'test@jenkins'       
-        }
-        
 
+        success {
+            script {
+                sh "curl --location --request POST 'https://api.telegram.org/bot${TOKEN}/sendMessage' --form text='${SUCCESS_BUILD}' --form chat_id='${CHAT_ID}'"
+            }
+        }
+
+        failure {
+            script {
+                sh "curl --location --request POST 'https://api.telegram.org/bot${TOKEN}/sendMessage' --form text='${FAILED_BUILD}' --form chat_id='${CHAT_ID}'"
+            }
+        }
     }
 }
 
