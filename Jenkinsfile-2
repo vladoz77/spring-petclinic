@@ -6,10 +6,10 @@ pipeline {
     }
 
     environment{
-        // APP_NAME="petclinic"
-        // DOCKER_REPO="vladoz77"
+        APP_NAME="petclinic"
+        REPO="docker.home.local"
         RELEASE="1.0.0"
-        IMAGE_NAME="vladoz77/petclinic"
+        IMAGE_NAME="${REPO}/${APP_NAME}"
         IMAGE_TAG="${RELEASE}-${BUILD_NUMBER}"
 
         // Telegram bot credentials
@@ -98,7 +98,7 @@ pipeline {
         stage('push image to dockerhub'){
             steps{
                 script{
-                    withDockerRegistry(credentialsId: 'dockerhub-token') {
+                    withDockerRegistry(credentialsId: 'nexus') {
                         customImage.push("${IMAGE_TAG}")
                         customImage.push('latest')
                     }
