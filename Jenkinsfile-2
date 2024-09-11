@@ -98,7 +98,7 @@ pipeline {
         stage('push image to dockerhub'){
             steps{
                 script{
-                    withDockerRegistry(credentialsId: 'nexus') {
+                    withDockerRegistry(credentialsId: 'nexus', url: 'https://docker.home.local') {
                         customImage.push("${IMAGE_TAG}")
                         customImage.push('latest')
                     }
