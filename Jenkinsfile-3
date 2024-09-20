@@ -44,6 +44,7 @@ pipeline {
             agent {
                 docker {
                     reuseNode true
+                    args "–entrypoint=''"
                     image 'maven:3.8.7-openjdk-18'
                 }
             }
