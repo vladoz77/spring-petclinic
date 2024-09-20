@@ -44,11 +44,9 @@ pipeline {
             agent {
                 docker {
                     reuseNode true
-                    image 'maven:3.9.0-eclipse-temurin-17'
-                    args '-e JAVA_HOME=/opt/java/openjdk'
+                    image 'maven:3.5.0-jdk-8'
                 }
             }
-            
             steps {
                 sh "mvn  package -Dcheckstyle.skip -DskipTests"
             }
