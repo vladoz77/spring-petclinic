@@ -2,6 +2,16 @@ pipeline {
     agent any
     
     stages {
+        stage('Clean WS') {
+            steps {
+                cleanWs()
+            }
+        }
+
+        stage('pull scm'){
+            git branch: 'main', credentialsId: 'github-cred', url: 'https://github.com/vladoz77/spring-petclinic'
+        }
+
         stage("Build") {
             agent {
                 docker {
@@ -10,7 +20,7 @@ pipeline {
                 }
             }
             steps {
-                sh 'mvn --version'
+                sh 'mvn  package  -Dcheckstyle.skip'
             }
         }
     }
