@@ -1,0 +1,141 @@
+pipeline {
+    agent any
+    tools{
+        jdk "Java17"
+        maven "Maven3"
+    }
+
+    environment{
+        APP_NAME="my_project/petclinic"
+        REPO="reg.home.local"
+        RELEASE="1.0.0"
+        IMAGE_NAME="${REPO}/${APP_NAME}"
+        IMAGE_TAG="${RELEASE}-${BUILD_NUMBER}"
+
+        // Telegram bot credentials
+        TOKEN=credentials('telegram_token')
+        CHAT_ID=credentials('telegram_chat_id')
+
+        // Telegram text message
+        SUCCESS_BUILD="${JOB_NAME}: #${BUILD_NUMBER} /n ✅ Deploy succeeded!"
+        FAILED_BUILD="${JOB_NAME}: #${BUILD_NUMBER} /n ❌Deploy failure!"
+    }
+    
+    stages {
+        stage('Clean WS') {
+            steps {
+                cleanWs()
+            }
+        }
+
+        stage('Copy SCM') {
+            environment {
+                RepoBranch = 'main'
+                GitCred = 'github-cred'
+                GitURL = 'https://github.com/vladoz77/spring-petclinic'
+            }
+            steps {
+                GitCheckout()
+                // git branch: 'main', credentialsId: 'github', url: 'https://github.com/vladoz77/spring-petclinic'
+            }
+        }
+
+        stage('maven build') {
+           
+            steps {
+                sh "mvn  package -Dcheckstyle.skip -DskipTests"
+            }
+        }
+
+        stage('run test') {
+            parallel {
+                stage('maven test') {
+                    steps {
+                        sh "mvn test -Dcheckstyle.skip"
+                    }
+                }
+
+                stage('sonarqube analyses') {
+                    steps {
+                        script{
+                            withSonarQubeEnv(credentialsId: 'sonarqube-token') {
+                                sh "mvn sonar:sonar"
+                            }
+                        }
+                    }
+                }
+
+            }
+        }
+
+        stage('Quality gate') {
+            steps {
+                timeout(time: 1, unit: 'HOURS') {
+                    waitForQualityGate abortPipeline: true, credentialsId: 'sonarqube-token'
+                }
+            }         
+        }
+
+        stage('build image') {
+            steps {
+                script{
+                    customImage=docker.build("${IMAGE_NAME}:${IMAGE_TAG}")
+                    
+                }
+            }
+        } 
+        
+        
+        
+        stage('Trivy scan') {
+            steps {
+                script {
+                    sh 'trivy image -o ${WORKSPACE}/result.txt ${IMAGE_NAME}:${IMAGE_TAG}'
+                }
+            }
+        }
+
+        stage('push image to dockerhub'){
+            steps{
+                script{
+                    withDockerRegistry(credentialsId: 'harbor', url: 'https://reg.home.local') {
+                        customImage.push("${IMAGE_TAG}")
+                        customImage.push('latest')
+                    }
+                }
+                
+            }
+        }
+
+        stage('cleanup image'){
+            steps{
+                script{
+                    sh "docker image rm ${IMAGE_NAME}:${IMAGE_TAG}"
+                }
+            }
+        }
+        
+    }
+    post {
+        always  {
+            junit '**/target/surefire-reports/TEST-*.xml'
+            archiveArtifacts 'target/*.jar,result.txt'
+        }
+
+        success {
+            script {
+                sh "curl --location --request POST 'https://api.telegram.org/bot${TOKEN}/sendMessage' --form text='${SUCCESS_BUILD}' --form chat_id='${CHAT_ID}'"
+            }
+        }
+
+        failure {
+            script {
+                sh "curl --location --request POST 'https://api.telegram.org/bot${TOKEN}/sendMessage' --form text='${FAILED_BUILD}' --form chat_id='${CHAT_ID}'"
+            }
+        }
+    }
+}
+
+void GitCheckout() {
+        git branch: "${RepoBranch}", credentialsId: "${GitCred}", url: "${GitURL}"
+}
