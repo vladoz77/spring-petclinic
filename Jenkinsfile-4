@@ -1,9 +1,5 @@
 pipeline {
     agent any
-    // tools{
-    //     // jdk "Java17"
-    //     maven "Maven3"
-    // }
     environment{
         APP_NAME="my_project/petclinic"
         REPO="reg.home.local"
