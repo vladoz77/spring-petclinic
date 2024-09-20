@@ -16,7 +16,6 @@ pipeline {
                         url: 'https://github.com/vladoz77/spring-petclinic'
                 }
             }
-            
         }
 
         stage("Build") {
@@ -29,6 +28,13 @@ pipeline {
             steps {
                 sh 'mvn  package  -Dcheckstyle.skip'
             }
+        }
+    }
+
+    post {
+        always  {
+            junit '**/target/surefire-reports/TEST-*.xml'
+            archiveArtifacts 'target/*.jar,result.txt'
         }
     }
 }
