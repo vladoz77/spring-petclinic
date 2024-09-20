@@ -45,7 +45,7 @@ pipeline {
                 docker {
                     reuseNode true
                     image 'maven:3.9.0-eclipse-temurin-17'
-                    args '-v $WORKSPACE:/build --workdir /build'
+                    args '-v $HOME/.m2:/root/.m2'
                 }
             }
             
