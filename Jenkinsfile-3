@@ -41,7 +41,14 @@ pipeline {
         }
 
         stage('maven build') {
-           
+            agent {
+                docker {
+                    reuseNode true
+                    image 'maven:3.9.0-eclipse-temurin-17'
+                    args '-v $WORKSPACE:/build --workdir /build'
+                }
+            }
+            
             steps {
                 sh "mvn  package -Dcheckstyle.skip -DskipTests"
             }
