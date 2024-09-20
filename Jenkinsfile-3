@@ -87,13 +87,13 @@ pipeline {
         
         
         
-        stage('Trivy scan') {
-            steps {
-                script {
-                    sh 'trivy image -o ${WORKSPACE}/result.txt ${IMAGE_NAME}:${IMAGE_TAG}'
-                }
-            }
-        }
+        // stage('Trivy scan') {
+        //     steps {
+        //         script {
+        //             sh 'trivy image -o ${WORKSPACE}/result.txt ${IMAGE_NAME}:${IMAGE_TAG}'
+        //         }
+        //     }
+        // }
 
         stage('push image to dockerhub'){
             steps{
