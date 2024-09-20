@@ -49,19 +49,25 @@ pipeline {
 
         
             
-        stage('maven test') {
-            steps {
-                sh "mvn test -Dcheckstyle.skip"
-            }
-        }
-
-        stage('sonarqube analyses') {
-            steps {
-                script{
-                    withSonarQubeEnv(credentialsId: 'sonarqube-token') {
-                        sh "mvn sonar:sonar"
+        stage('run test') {
+            parallel {
+                
+                stage('maven test') {
+                    steps {
+                        sh "mvn test -Dcheckstyle.skip"
                     }
                 }
+
+                stage('sonarqube analyses') {
+                    steps {
+                        script{
+                            withSonarQubeEnv(credentialsId: 'sonarqube-token') {
+                                sh "mvn sonar:sonar"
+                            }
+                        }
+                    }
+                }
+
             }
         }
 
