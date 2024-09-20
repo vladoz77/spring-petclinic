@@ -92,12 +92,12 @@ pipeline {
         //     }
         // }
 
-        stage('push image to dockerhub'){
+        stage('push image to registrie'){
             steps{
                 script{
                     withDockerRegistry(credentialsId: 'harbor', url: 'https://reg.home.local') {
                         customImage.push("${IMAGE_TAG}")
-                        // customImage.push('latest')
+                        customImage.push('latest')
                     }
                 }
                 
