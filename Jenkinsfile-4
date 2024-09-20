@@ -1,5 +1,13 @@
 pipeline {
     agent any
+
+    environment{
+        APP_NAME="my_project/petclinic"
+        REPO="reg.home.local"
+        RELEASE="1.0.0"
+        IMAGE_NAME="${REPO}/${APP_NAME}"
+        IMAGE_TAG="${RELEASE}-${BUILD_NUMBER}"
+    }
     
     stages {
         stage('Clean WS') {
@@ -43,6 +51,54 @@ pipeline {
                 sh "mvn test -Dcheckstyle.skip"
             }
         }
+
+        stage('sonarqube analyses') {
+            steps {
+                script{
+                    withSonarQubeEnv(credentialsId: 'sonarqube-token') {
+                        sh "mvn sonar:sonar"
+                    }
+                }
+            }
+        }
+
+        stage('Quality gate') {
+            steps {
+                timeout(time: 1, unit: 'HOURS') {
+                    waitForQualityGate abortPipeline: false, credentialsId: 'sonarqube-token'
+                }
+            }         
+        }
+
+        stage('build image') {
+            steps {
+                script{
+                    customImage=docker.build("${IMAGE_NAME}:${IMAGE_TAG}")
+                    
+                }
+            }
+        }
+
+        stage('push image to registrie'){
+            steps{
+                script{
+                    withDockerRegistry(credentialsId: 'harbor', url: 'https://reg.home.local') {
+                        customImage.push("${IMAGE_TAG}")
+                        customImage.push('latest')
+                    }
+                }
+                
+            }
+        }
+
+        stage('cleanup image'){
+            steps{
+                script{
+                    sh "docker image rm ${IMAGE_NAME}:${IMAGE_TAG}"
+                }
+            }
+        }
+    
     }
 
     post {
