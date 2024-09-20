@@ -9,11 +9,14 @@ pipeline {
         }
 
         stage('pull scm'){
-            script {
-                git branch: 'main', 
-                    credentialsId: 'github-cred', 
-                    url: 'https://github.com/vladoz77/spring-petclinic'
+            steps{
+                script {
+                    git branch: 'main', 
+                        credentialsId: 'github-cred', 
+                        url: 'https://github.com/vladoz77/spring-petclinic'
+                }
             }
+            
         }
 
         stage("Build") {
