@@ -48,7 +48,7 @@ pipeline {
                     args '-e JAVA_HOME=/opt/java/openjdk'
                 }
             }
-            }
+            
             steps {
                 sh "mvn  package -Dcheckstyle.skip -DskipTests"
             }
