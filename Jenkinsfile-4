@@ -1,9 +1,9 @@
 pipeline {
     agent any
-    tools{
-        // jdk "Java17"
-        maven "Maven3"
-    }
+    // tools{
+    //     // jdk "Java17"
+    //     maven "Maven3"
+    // }
     environment{
         APP_NAME="my_project/petclinic"
         REPO="reg.home.local"
@@ -56,6 +56,13 @@ pipeline {
         }
 
         stage('sonarqube analyses') {
+            agent {
+                docker {
+                reuseNode true
+                image 'maven:3.9.0-eclipse-temurin-17'
+                args '-v $HOME/.m2:/root/.m2:z -u root'
+                }
+            }
             steps {
                 script{
                     withSonarQubeEnv(credentialsId: 'sonarqube-token') {
