@@ -12,8 +12,8 @@ pipeline {
             steps{
                 script {
                     git branch: 'main', 
-                        credentialsId: 'github-cred', 
-                        url: 'https://github.com/vladoz77/spring-petclinic'
+                    credentialsId: 'github-cred', 
+                    url: 'https://github.com/vladoz77/spring-petclinic'
                 }
             }
         }
@@ -27,6 +27,18 @@ pipeline {
             }
             steps {
                 sh 'mvn  package  -Dcheckstyle.skip'
+            }
+        }
+
+        stage('maven test') {
+            agent {
+                docker {
+                reuseNode true
+                image 'maven:3.9.0-eclipse-temurin-17'
+                }
+            }
+            steps {
+                sh "mvn test -Dcheckstyle.skip"
             }
         }
     }
