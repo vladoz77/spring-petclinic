@@ -41,16 +41,9 @@ pipeline {
         }
 
         stage('maven build') {
-            agent {
-                docker {
-                    reuseNode true
-                    image 'maven:3.8.6-jdk-8'
-                    args '-v $HOME/.m2:/root/.m2'
-                }
-            }
-            
+           
             steps {
-                    sh 'mvn  --version'
+                sh "mvn  package -Dcheckstyle.skip -DskipTests"
             }
         }
 
