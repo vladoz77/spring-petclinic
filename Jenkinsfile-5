@@ -16,7 +16,6 @@ pipeline {
     stages {
         stage('Copy SCM') {
             steps {
-                GitCheckout()
                 git branch: 'main', credentialsId: 'github-token', url: 'https://github.com/vladoz77/spring-petclinic'
             }
         }
