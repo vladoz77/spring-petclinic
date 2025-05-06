@@ -14,12 +14,6 @@ pipeline {
     }
     
     stages {
-        stage('Clean WS') {
-            steps {
-                cleanWs()
-            }
-        }
-
         stage('Copy SCM') {
             steps {
                 GitCheckout()
