@@ -6,9 +6,9 @@ pipeline {
 
     environment{
         // APP_NAME="petclinic"
-        // DOCKER_REPO="vladoz77"
+        DOCKER_REPO="registry.home-local.site"
         RELEASE="1.0.0"
-        IMAGE_NAME="vladoz77/petclinic"
+        IMAGE_NAME="petclinic"
         IMAGE_TAG="${RELEASE}-${BUILD_NUMBER}"
     }
     
@@ -19,14 +19,6 @@ pipeline {
             }
         }
 
-        stage('test java') {
-            steps {
-                sh 'echo $JAVA_HOME'
-                sh 'java -version'
-                sh 'javac -version'
-            }
-        }
-        
 
         stage('maven build') {
            
@@ -48,10 +40,7 @@ pipeline {
                         script{
                             withSonarQubeEnv(credentialsId: 'sonarqube_token') {
                                 sh '''
-                                    mvn sonar:sonar \
-                                    -Dmaven.wagon.http.ssl.insecure=true \
-                                    -Dmaven.wagon.http.ssl.allowall=true \
-                                    -Dmaven.wagon.http.authentication.preemptive=true
+                                    mvn sonar:sonar 
                                 '''
                             }
                         }
@@ -72,8 +61,7 @@ pipeline {
         stage('build image') {
             steps {
                 script{
-                    customImage=docker.build("${IMAGE_NAME}:${IMAGE_TAG}")
-                    
+                    customImage=docker.build("${DOCKER_REPO}/${IMAGE_NAME}:${IMAGE_TAG}")
                 }
             }
         } 
@@ -83,30 +71,23 @@ pipeline {
         stage('Trivy scan') {
             steps {
                 script {
-                    sh 'trivy image -o ${WORKSPACE}/result.txt ${IMAGE_NAME}:${IMAGE_TAG}'
+                    sh 'trivy image -o ${WORKSPACE}/result.txt ${DOCKER_REPO}/${IMAGE_NAME}:${IMAGE_TAG}'
                 }
             }
         }
 
-        // stage('push image to dockerhub'){
-        //     steps{
-        //         script{
-        //             withDockerRegistry(credentialsId: 'dockerhub-token') {
-        //                 customImage.push("${IMAGE_TAG}")
-        //                 customImage.push('latest')
-        //             }
-        //         }
+        stage('push image to dockerhub'){
+            steps{
+                script{
+                    withDockerRegistry(credentialsId: "nexus-token", url: "https://${DOCKER_REPO}") {
+                        customImage.push("${IMAGE_TAG}")
+                        customImage.push('latest')
+                    }
+                }
                 
-        //     }
-        // }
+            }
+        }
 
-        // stage('cleanup image'){
-        //     steps{
-        //         script{
-        //             sh "docker image rm ${IMAGE_NAME}:${IMAGE_TAG}"
-        //         }
-        //     }
-        // }
         
     }
     post {
@@ -115,17 +96,6 @@ pipeline {
             archiveArtifacts 'target/*.jar,result.txt'
         }
 
-        // success {
-        //     script {
-        //         sh "curl --location --request POST 'https://api.telegram.org/bot${TOKEN}/sendMessage' --form text='${SUCCESS_BUILD}' --form chat_id='${CHAT_ID}'"
-        //     }
-        // }
-
-        // failure {
-        //     script {
-        //         sh "curl --location --request POST 'https://api.telegram.org/bot${TOKEN}/sendMessage' --form text='${FAILED_BUILD}' --form chat_id='${CHAT_ID}'"
-        //     }
-        // }
     }
 }
 
