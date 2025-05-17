@@ -72,6 +72,13 @@ pipeline {
         
         stage('Trivy scan') {
             steps {
+                agent {
+                    docker {
+                        reuseNode true
+                        image 'aquasec/trivy'
+                        args '-v $HOME/.m2:/root/.m2:z -u root'
+                    }
+                }
                 script {
                     sh 'trivy image -o ${WORKSPACE}/result.txt ${DOCKER_REPO}/${IMAGE_NAME}:${IMAGE_TAG}'
                 }
